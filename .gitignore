@@ -4,3 +4,4 @@ __pycache__/
 test.py
 *.txt
 todo.md
+*.db

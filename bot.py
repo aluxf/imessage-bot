@@ -4,6 +4,7 @@ import re
 import os
 from dotenv import load_dotenv
 from multiprocessing import Process
+from database import db, ChatRoom
 load_dotenv()
 
 imessage = iMessage(os.getenv("MAC_USER"), os.getenv("PHONE_NUMBER"))
@@ -18,6 +19,12 @@ class iMessageBot:
         self.imessage = imessage
         #TODO: Move to database
         self.processed_chats = []
+        db.connect()
+        try:
+            ChatRoom.get(ChatRoom.name == self.chat)
+        except:
+            ChatRoom.create(name=self.chat)
+        db.close()
 
     def start(self):
         while True:
@@ -45,7 +52,8 @@ class iMessageBot:
             except:
                 args = []
 
-            command_process = Process(target=cmd, args=(self, args))
+            evoker = latest_message['phone_number']
+            command_process = Process(target=cmd, args=(self, args, evoker))
             command_process.start()
             self.processed_chats.append(latest_message['rowid'])
 

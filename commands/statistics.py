@@ -17,7 +17,7 @@ def stats_to_string(total_messages, total_words, top_words):
         string += f"\t {word} ({top_words[word]})\n"
     return string
 
-def stats(bot, args):
+def stats(bot, args, evoker):
     """
     Get the daily chat statistics for a person.
     Usage: !stats <name>

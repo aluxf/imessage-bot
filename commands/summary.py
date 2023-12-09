@@ -48,7 +48,7 @@ def gpt_summarize(conversation_history, date):
     choice = chat_completion.choices[0]
     return choice.message.content
 
-def summary(bot, args):
+def summary(bot, args, evoker):
     """
     Get summary for a given date.
     Usage: !summary <yyyy-mm-dd>
