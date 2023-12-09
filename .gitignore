@@ -1,0 +1,6 @@
+.env
+__pycache__/
+*_bot.py
+test.py
+*.txt
+todo.md
