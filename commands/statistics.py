@@ -1,5 +1,13 @@
 from datetime import datetime
 from collections import Counter
+from nltk.corpus import stopwords
+from nltk import download
+
+# Download the stopwords package if it's not already downloaded
+download('stopwords')
+
+# TODO: When packaging the bot, the path to the data packages needs to be set.
+# nltk.data.path.append('/path/to/your/data/packages')
 
 def stats_to_string(total_messages, total_words, top_words):
     string = f"Total messages: {total_messages}\n"
@@ -34,6 +42,8 @@ def stats(bot, args):
     total_messages = 0
     total_words = 0
     words = []
+    # Get the list of Swedish stop words
+    stop_words = set(stopwords.words('swedish'))
 
     for message in messages:
         if not message["date"].date() == date:
@@ -43,9 +53,11 @@ def stats(bot, args):
             continue
 
         total_messages += 1
-        total_words += len(message['body'].split())
-        words += message['body'].split()
+        words_in_message = message['body'].split()
+        total_words += len(words_in_message)
+        #filter words
+        words += [word.lower() for word in words_in_message if word.lower() not in stop_words]
 
-    top_words = dict(Counter(words).most_common(5))
+    top_words = dict(Counter(words).most_common(10))
 
     bot.imessage.send_message(stats_to_string(total_messages, total_words, top_words), bot.chat)
