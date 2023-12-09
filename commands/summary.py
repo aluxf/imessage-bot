@@ -85,5 +85,5 @@ def summary(bot, args):
         
         conversation_history = f"{identifier}: {message['body']}" + "\n" + conversation_history
 
-    summary = gpt_summarize(conversation_history)
+    summary = gpt_summarize(conversation_history, date)
     bot.imessage.send_message(summary, bot.chat)

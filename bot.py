@@ -1,10 +1,9 @@
 import time
 from imessage import iMessage
-from datetime import datetime, timedelta
 import re
 import os
-from openai import OpenAI
 from dotenv import load_dotenv
+from multiprocessing import Process
 load_dotenv()
 
 imessage = iMessage(os.getenv("MAC_USER"), os.getenv("PHONE_NUMBER"))
@@ -17,32 +16,38 @@ class iMessageBot:
         self.contacts = contacts
         self.chat = chat
         self.imessage = imessage
+        #TODO: Move to database
+        self.processed_chats = []
 
     def start(self):
         while True:
+            time.sleep(0.5)
             messages = self.get_messages(1)
-            print(messages)
             if not messages:
                 continue
             latest_message = messages[0]
+            print(latest_message)
             text = latest_message['body']
 
-            # Not a command
-            if not text.startswith("!"):
+            # Not a command or already processed
+            if not text.startswith("!") or latest_message['rowid'] in self.processed_chats:
                 continue
 
-            for command in self.commands:
-                print(text.split())
-                if not text.split()[0] == command:
-                    continue
-                try:
-                    args = text.split()[1:]
-                except:
-                    args = []
-                # TODO: Spawn new process to run command
-                # TODO: Support for arguments
-                self.commands[command](self, args)
-            time.sleep(1)
+            cmd_str = text.split()[0]
+            print(cmd_str)
+            try:
+                cmd = self.commands[cmd_str]
+            except:
+                continue
+
+            try:
+                args = text.split()[1:]
+            except:
+                args = []
+
+            command_process = Process(target=cmd, args=(self, args))
+            command_process.start()
+            self.processed_chats.append(latest_message['rowid'])
 
     def get_messages(self, n):
         messages = imessage.read_messages(n=n, human_readable_date=True)
