@@ -20,6 +20,8 @@ def gpt_summarize(conversation_history, date):
                 You are a chat summarizer that summarizes the Tour De Stud chat for a given date.
                 
                 - Summarize the most important and funniest parts of the conversation.
+                - Don't use the same words over and over again.
+                - The text should be casual and easy to read - avoid advanced words.
                 - It should be a flowing text.
                 - It should be exciting to read.
                 - Make it as funny as possible but still realistic.
@@ -55,7 +57,6 @@ def summary(bot, args, evoker):
     """
     n = None
     if not args:
-        n = 1000
         date = datetime.now().date()
     else:
         try:
@@ -67,10 +68,8 @@ def summary(bot, args, evoker):
 
     messages = bot.get_messages(n=n)
     conversation_history = ""
-    
     found_date = False
     for message in messages:
-
         if not message["date"].date() == date:
             if found_date:
                 break
