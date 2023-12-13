@@ -50,11 +50,13 @@ def gpt_summarize(conversation_history, date):
     choice = chat_completion.choices[0]
     return choice.message.content
 
-def summary(bot, args, evoker):
+def summary(bot, data):
     """
     Get summary for a given date.
     Usage: !summary <yyyy-mm-dd>
     """
+    args = data["args"]
+
     n = None
     if not args:
         date = datetime.now().date()
@@ -64,7 +66,6 @@ def summary(bot, args, evoker):
         except:
             bot.imessage.send_message("Invalid date argument in !summary.", bot.chat)
             return
-
 
     messages = bot.get_messages(n=n)
     conversation_history = ""
@@ -76,12 +77,15 @@ def summary(bot, args, evoker):
             continue
         found_date = True
 
+        # TODO: Add some type of signature to summary so it can be ignored.
+        if message["is_from_me"] and len(message["body"].split()) > 200:
+            continue
+
         identifier = message['phone_number']
         try:
             identifier = bot.contacts[identifier]
         except:
             pass
-        
         conversation_history = f"{identifier}: {message['body']}" + "\n" + conversation_history
 
     summary = gpt_summarize(conversation_history, date)

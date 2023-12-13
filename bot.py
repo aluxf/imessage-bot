@@ -53,7 +53,12 @@ class iMessageBot:
                 args = []
 
             evoker = latest_message['phone_number']
-            command_process = Process(target=cmd, args=(self, args, evoker))
+            data = {
+                "args": args,
+                "evoker": evoker
+                # Add more data if necessary
+            }
+            command_process = Process(target=cmd, args=(self, data))
             command_process.start()
             self.processed_chats.append(latest_message['rowid'])
 

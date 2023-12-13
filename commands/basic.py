@@ -2,7 +2,7 @@
 from database import ChatRoom, ChatUser, db
 from peewee import DoesNotExist
 
-def example(bot, args, evoker):
+def example(bot, _):
     """
     Example command.
     Usage: !example
@@ -10,14 +10,14 @@ def example(bot, args, evoker):
 
     bot.imessage.send_message("Example command", bot.chat)
 
-def pong(bot, args, evoker):
+def pong(bot, _):
     """
     Ping Pong :)
     Usage: !ping
     """
     bot.imessage.send_message(f"pong!", bot.chat)
 
-def help(bot, args, evoker):
+def help(bot, _):
     """
     Get list of commands.
     Usage: !help
@@ -31,11 +31,14 @@ def help(bot, args, evoker):
         string += f"\t {doc}\n"
     bot.imessage.send_message(string, bot.chat)
 
-def nick(bot, args, evoker):
+def nick(bot, data):
     """
     Get and change your nickname.
     Usage: !nick <name> (optional)
     """
+    args = data["args"]
+    evoker = data["evoker"]
+    
     db.connect()
 
     arg_len = len(args)

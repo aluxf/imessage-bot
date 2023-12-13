@@ -17,13 +17,14 @@ def stats_to_string(total_messages, total_words, top_words):
         string += f"\t {word} ({top_words[word]})\n"
     return string
 
-def stats(bot, args, evoker):
+def stats(bot, data):
     """
     Get the daily chat statistics for a person.
     Usage: !stats <name>
     """
     #TODO: Implement based on nicknames in db
     #TODO: Filter boring words from top words.
+    args = data["args"]
 
     try:
         name = args[0].lower()
